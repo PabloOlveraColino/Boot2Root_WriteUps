@@ -10,7 +10,7 @@ Hacemos un escaneo con `nmap` para ver las versiones también.
 nmap -sV 10.10.98.176
 ```
 
-![[Pasted image 20250204104650.png]]
+![[Pasted%20image%2020250204104650.png]]
 
 Sólo escanea los puertos más comunes por defecto así que usamos la opción `-p-` para probar con todos.
 
