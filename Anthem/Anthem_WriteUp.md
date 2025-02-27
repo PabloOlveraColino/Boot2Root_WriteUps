@@ -163,7 +163,7 @@ Así que hacemos clic derecho sobre él y nos dirigimos a la pestaña de "Seguri
 
 Y obtenemos la contraseña del admin.
 
-![Acceso a carpeta admin](images/Pasted%20image%2020250222174744.png)
+![Acceso a carpeta admin](images/Pasted%20image%20250222174520.png)
 
 ```
 ChangeMeBaby1MoreTime
