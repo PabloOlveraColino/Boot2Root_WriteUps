@@ -10,7 +10,7 @@ nmap -sV -vv 10.10.31.106
 
 Hay 2 puertos abiertos: el 22 de ssh y el 80 de una aplicación web.
 
-![[Pasted image 20250221170150.png]]
+![Pasted image 20250221170150](images/20250221170150.png)
 
 ## Fuzzing web
 
