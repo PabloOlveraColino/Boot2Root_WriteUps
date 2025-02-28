@@ -66,11 +66,11 @@ Ejecutamos el siguiente comando para ver los permisos que tiene el usuario:
 sudo -l
 ```
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221172307.png)
 
 Vemos que se le tiene permitido usar python para ejecutar un script llamado `bak.py`. Python puede ayudarnos a generar  una root shell.
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221172514.png)
 
 Borramos el script ya que no nos permite nada más y vamos a crear nosotros el nuestro.
 
@@ -85,18 +85,18 @@ Creamos un nuevo`bak.py`con el siguiente contenido:
 import pty; pty.spawn("/bin/bash")
 ```
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221172552.png)
 
 Ejecutamos el siguiente comando para iniciar el script y obtener el root.
 
 ```
 sudo /usr/bin/python3 /home/meliodas/bak.py
 ```
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221172815.png)
 
 Nos ubicamos en la carpeta`/root/` y obtenemos la última flag.
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221172922.png)
 
 ```
 e8c8c6c256c35515d1d344ee0488c617
