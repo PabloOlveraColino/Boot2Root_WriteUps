@@ -14,7 +14,7 @@ Después de esperar unos minutos tenemos los siguientes resultados:
 
 Y estos son los resultados del script de`nmap`.
 
-![Resultados del script de nmap](./images/Pasted_image_2025022211902.png)
+![Imagen](./images/Pasted_image_20250222124555.png)
 
 ## Enumerating
 
