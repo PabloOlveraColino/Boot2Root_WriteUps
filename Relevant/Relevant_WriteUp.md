@@ -10,7 +10,7 @@ nmap -A -sV -sC -T4 -p- 10.10.121.56
 
 Después de esperar unos minutos tenemos los siguientes resultados:
 
-![Escaneo de puertos](../images/Pasted%20image%20202502222121956.png)
+![Escaneo de puertos](./images/Pasted%20image%20202502222121956.png)
 
 Y estos son los resultados del script de`nmap`.
 
