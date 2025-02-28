@@ -144,7 +144,7 @@ Accedemos a la URL del archivo que hemos subido de php. La página se quedará c
 
 En el puerto que abrimos en escucha con `netcat`hemos establecido la conexión.
 
-![Imagen](images/Pasted%20image%2020250220178034.png)
+![Imagen](images/Pasted%20image%20250220180034.png)
 
 Obtenemos la primera **flag**:
 
