@@ -10,7 +10,7 @@ nmap -A -T4 -p- 10.10.10.249
 
 Hay dos puertos abiertos: un servidor en web en el puerto 80 y un RDP en el 3389.
 
-![Escaneo de puertos](images/Pasted%20image%2020250221152920.png)
+![Escaneo de puertos](images/Pasted%20image%20202502221170150.png)
 ## Fuzzing
 
 Accedemos al servidor web.
