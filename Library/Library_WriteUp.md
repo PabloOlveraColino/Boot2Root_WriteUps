@@ -16,7 +16,7 @@ Hay 2 puertos abiertos: el 22 de ssh y el 80 de una aplicación web.
 
 Accedemos al sitio web. 
 
-![Imagen](images/Pasted_image_20250221170416.pngg)
+![Imagen](images/Pasted_image_20250221170416.png)
 
 Le hacemos fuzzing con `dirbuster` para obtener los directorios que tenga.
 
