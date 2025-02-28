@@ -144,11 +144,11 @@ Accedemos a la URL del archivo que hemos subido de php. La página se quedará c
 
 En el puerto que abrimos en escucha con `netcat`hemos establecido la conexión.
 
-![Imagen](images/Pasted%20image%20250220180034.png)
+![Imagen](images/Pasted%20image%20250220180225.png)
 
 Obtenemos la primera **flag**:
 
-![Imagen](images/Pasted%20image%2020250220178225.png)
+![Imagen](images/Pasted%20image%20250220180225.png)
 
 ```
 6470e394cbf6dab6a91682cc8585059b
@@ -164,7 +164,7 @@ cd /var/www/html/fuel/application/config
 
 Y mostramos el fichero `database.php`. En él están las credenciales del usuario `root`.
 
-![Imagen](images/Pasted%20image%2020250220170945.png)
+![Imagen](images/Pasted%20image%20250220180945.png)
 
 Hacemos más interactiva la terminal con el siguiente comando de python:
 
@@ -180,11 +180,11 @@ su root
 
 Y la contraseña es `mememe`.
 
-![Imagen](images/Pasted%20image%2020250220172137.png)
+![Imagen](images/Pasted%20image%20250220182137.png)
 
 Finalmente, obtenemos la última flag que se encuentra en la carpeta `root`y en el fichero `root.txt`.
 
-![Imagen](images/Pasted%20image%2020250220172314.png)
+![Imagen](images/Pasted%20image%20250220182314.png)
 
 ```
 b9bbcb33e11b80be759c4e844862482d
