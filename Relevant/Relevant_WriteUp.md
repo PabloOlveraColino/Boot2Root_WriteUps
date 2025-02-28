@@ -14,7 +14,7 @@ Después de esperar unos minutos tenemos los siguientes resultados:
 
 Y estos son los resultados del script de`nmap`.
 
-![Escaneo de puertos](./images/Pasted_image_20250222121902.png)
+![Resultados del script de nmap](./images/Pasted_image_2025022211902.png)
 
 ## Enumerating
 
