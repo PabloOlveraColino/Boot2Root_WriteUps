@@ -20,19 +20,19 @@ Accedemos al sitio web.
 
 Le hacemos fuzzing con `dirbuster` para obtener los directorios que tenga.
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221170508.png)
 
 El único interesante puede ser el directorio de  `/images/`
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221171240.png)
 
 También comprobamos si hay algo en el archivo `robots.txt`. Esto puede ser una pista de que uno de los usuarios tiene su contraseña en el diccionario `rockyou`.
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221171339.png)
 
 Que puede ser `meliodas`por como vemos en la página anterior.
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221171938.png)
 
 Hacemos un ataque de fuerza bruta con `hydra` por el puerto 22 para obtener la contraseña de `meliodas` y acceder al sistema.
 
