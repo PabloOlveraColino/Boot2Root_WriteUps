@@ -32,7 +32,7 @@ También comprobamos si hay algo en el archivo `robots.txt`. Esto puede ser una 
 
 Que puede ser `meliodas`por como vemos en la página anterior.
 
-![Imagen](images/Pasted_image_20250221171938.png)
+![Imagen](images/Pasted_image_20250221171459.png)
 
 Hacemos un ataque de fuerza bruta con `hydra` por el puerto 22 para obtener la contraseña de `meliodas` y acceder al sistema.
 
@@ -42,17 +42,17 @@ hydra -l meliodas -P /usr/share/wordlists/rockyou.txt ssh://10.10.31.106
 
 Después de unos minutos, obtenemos la contraseña del usuario y accedemos por ssh con sus credenciales.
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221171938.png)
 
 ```
 ssh meliodas@10.10.31.106
 ```
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221172044.png)
 
 Obtenemos la flag de`user.txt`.
 
-![Imagen](images/Pasted_image_20250221170150.png)
+![Imagen](images/Pasted_image_20250221172143.png)
 
 ```
 6d488cbb3f111d135722c33cb635f4ec
