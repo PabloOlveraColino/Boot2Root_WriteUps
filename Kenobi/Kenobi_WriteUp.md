@@ -24,7 +24,7 @@ nmap -p 445 --script=smb-enum-shares.nse,smb-enum-users.nse 10.10.17.83
 
 Encontramos 3 shares por SMB.
 
-![[Pasted image 20250223164642.png]]
+![Imagen](images/Pasted_image_20250223164642.png)
 
 Accedemos al de anonymous:
 
