@@ -11,7 +11,8 @@ sudo nmap -sV -O -T4 10.10.17.83
 
 Tenemos 7 puertos abiertos potencialmente vulnerables.
 
-![[Pasted image 20250223164250.png]]
+
+![Imagen](images/Pasted image 20250223164250.png.
 
 ## Enumerando
 
