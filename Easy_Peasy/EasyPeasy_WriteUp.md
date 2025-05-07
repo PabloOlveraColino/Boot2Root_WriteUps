@@ -13,14 +13,16 @@ Visualizamos tres puertos abiertos:
 - El puerto 6498 de SSH.
 - El puerto 65524 que es un servidor de Apache por HTTP.
 
-![[Hacking_Etico/TryHackMe_WriteUps/Easy_Peasy/images/image.png]]
+![](images/image.png)
+
 
 ## Explotación web
 
 Para obtener más directorios del sitio web de la máquina, vamos a utilizar`dirbuster`para hacer fuzzing:
 
-![[Hacking_Etico/TryHackMe_WriteUps/Easy_Peasy/images/image-1.png]]
+![](images/image-1.png)
 
+![](images/image-2.png)
 ![[Hacking_Etico/TryHackMe_WriteUps/Easy_Peasy/images/image-2.png]]
 
 Encontramos un directorio llamado`/hidden/`:
