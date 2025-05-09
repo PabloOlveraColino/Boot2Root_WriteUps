@@ -2,71 +2,69 @@
 
 ## Escaneo de puertos
 
-Ejecutamos un mapeo de puertos con`nmap`para obtener todos los puertos y servicios abiertos de la máquina vulnerable.
+Ejecutamos un mapeo de puertos con `nmap` para obtener todos los puertos y servicios abiertos de la máquina vulnerable:
 
-```
+```bash
 sudo nmap -sV -T4 -p- 10.10.66.233
 ```
 
-Tenemos ssh y http (Apache) como puertos abiertos disponibles.
+Tenemos SSH y HTTP (Apache) como puertos abiertos disponibles.
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image.png]]
+![](images/image.png)
 
 ## Enumeración web
 
-Usamos el comando`gobuster`para hacer fuzzing y obtener más directorios ocultos en la página web.
+Usamos el comando `gobuster` para hacer fuzzing y obtener más directorios ocultos en la página web:
 
+```bash
+gobuster dir -u http://10.10.66.233 -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt
 ```
-gobuster dir -u 10.10.66.233 -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt
-```
 
-De momento encontramos dos directorios potenciales,`/uploads`y`/panel`.
+De momento encontramos dos directorios potenciales: `/uploads` y `/panel`.
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-1.png]]
+![](images/image-1.png)
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-2.png]]
+![](images/image-2.png)
 
 ## Reverse shell
 
-Vamos a buscar una forma de obtener una reverse shell y obtener la flag.
+Buscamos una forma de obtener una reverse shell y obtener la flag.
 
-https://github.com/pentestmonkey/php-reverse-shell
+Clonamos el repositorio de [PentestMonkey PHP reverse shell](https://github.com/pentestmonkey/php-reverse-shell) y copianmos el contenido de `php-reverse-shell.php` en un nuevo fichero local llamado `shell.php`.
 
-En esta página copiamos el contenido del fichero`php-reverse-shell.php`en otro que vamos a crear en nuestro sistema llamado`shell.php`.
+![](images/image-3.png)
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-3.png]]
+Modificamos la variable `$ip` de nuestra IP en Kali.
 
-Modificamos el parámetro de`$ip` (nuestra IP en kali) en el fichero.
+![](images/image-4.png)
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-4.png]]
+Intentamos subir el fichero, pero la web no permite subir extensiones `.php`.
 
-Subimos el fichero a la página pero no permite subir archivos`.php`.
+![](images/image-5.png)
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-5.png]]
+Probamos renombrar a `.php2`, `.php3`, `.php4`, `.php5`; funciona con `.php5`.
 
-Probamos con`.php2`, `.php3`,`.php4`,`.php5`porque buscando en Google podemos que los archivos php pueden ir con distintas extensiones. Funciona renombrando el fichero a`.php5`.
+![](images/image-6.png)
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-6.png]]
+Ponemos Netcat en escucha en nuestro equipo:
 
-Iniciamos el puerto 1234 en escucha en nuestra terminal.
-
-```
+```bash
 nc -lvnp 1234
 ```
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-7.png]]
+![](images/image-7.png)
 
-En`/uploads`está el fichero que hemos subido.
+Accedemos al directorio `/uploads` y vemos nuestro fichero.
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-8.png]]
+![](images/image-8.png)
 
-Hacemos clic en él y estamos dentro.
+Accedemos al script renombrado para lanzar la reverse shell.
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-9.png]]
+![](images/image-9.png)
 
-En el fichero de apache está la flag del user.
+Ya tenemos shell. Leemos la flag de usuario en el directorio de Apache.
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-10.png]]
+![](images/image-10.png)
 
 ```
 THM{y0u_g0t_a_sh3ll}
@@ -74,53 +72,34 @@ THM{y0u_g0t_a_sh3ll}
 
 ## Escalada de privilegios
 
-Buscamos un archivo con permisos de SUID en el sistema con el siguiente comando:
+Buscamos binarios con SUID:
 
-```
+```bash
 find / -user root -perm /4000 2>/dev/null
 ```
 
-El fichero`/usr/bin/python`puede ser interesante.
+Destaca `/usr/bin/python` con SUID.
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-11.png]]
+![](images/image-11.png)
 
-Buscamos en la siguiente página para saber como explotar binarios de Python con SUID:
+Consultamos en [GTFOBins](https://gtfobins.github.io/) cómo abusar de Python con SUID.
 
-https://gtfobins.github.io/
+![](images/image-12.png)
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-12.png]]
+Ejecutamos el siguiente payload para obtener una shell con privilegios:
 
-Ejecutamos el siguiente payload:
-
-```
+```bash
 python -c 'import os; os.execl("/bin/sh", "sh", "-p")'
 ```
 
-Y ya somos root en el sistema.
+Ahora somos root.
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-13.png]]
+![](images/image-13.png)
 
-Obtenemos la flag del root.
+Leemos la flag de root:
 
-![[Hacking_Etico/TryHackMe_WriteUps/RootMe/images/image-14.png]]
+![](images/image-14.png)
 
 ```
 THM{pr1v1l3g3_3sc4l4t10n}
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
