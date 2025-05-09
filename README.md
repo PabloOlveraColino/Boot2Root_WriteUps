@@ -18,4 +18,3 @@
 * [Startup](Startup/Startup_WriteUp.md)
 * [Tech Supp0rt](Tech_Supp0rt/Tech_Supp0rt_WriteUp.md)
 * [Agent Sudo](Agent_Sudo/Agent_Sudo_WriteUp.md)
-* [README](README.md)
